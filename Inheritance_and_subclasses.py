@@ -1,4 +1,5 @@
-# Class methods and Static methods
+# Inheritance and Subclasses
+
 class Car:
     # class variables
     car_type: str = 'Hatchback'
@@ -19,63 +20,49 @@ class Car:
 
     def increase_price(self):
         # Using a class variable - one way
-        self.price *= Car.price_inc
+        self.price *= self.price_inc
         # Other way
         #self.price *= self.price_inc
-        return f'Total Price: Rs. {self.price}'
-
-    @classmethod
-    def set_price_inc(cls, amount):
-        """Sets the price_inc of the class."""
-        cls.price_inc = amount
+        
 
 
-    @classmethod
-    def create_instance_from_comma_separated_string(cls, cs):
-        """Creates an object from a comma separated string."""
-        brand, model, price = cs.split(',')
-        return cls(brand, model, int(price))
+# Subclass - 1    
+class FuelCars(Car):
+    """FuelCars is a sub-class of Car."""
+    # Changing the price_inc for FuelCars
+    price_inc:int = 1.02
 
-    """Static methods do not take any arguments like self or cls. They are just
-       like normal function that has some logical connection to our class.
-       If a method doesn't use any of instance/class varaibles/methods then that
-       method is a good candidate for Staticmethod
-       """
+    # Adding some extra instance variables to FuelCars
+    def __init__(self, brand: str, model: str, price: int, fuel: str):
+        # Calls the parent class' __init__() method
+        # Usually sufficient when Single inheritance
+        super().__init__(brand, model, price)
+        # Another way - Used when there is Multiple inheritance
+        #Car.__init__(brand, model, price)
+        self.fuel = fuel
 
-    @staticmethod
-    def is_workday(day):
-        if day.weekday() in (5,6):
-            return False
-        return True
+
+# Subclass - 2
+class ElectricCars(Car):
+    price_inc = 1.06
+
+    def __init__(self, brand: str, model: str, price: int, isSelfDriving: bool):
+        super().__init__(brand, model, price)
+        self.isSelfDriving = isSelfDriving
+    
+
 
 # Driver Code    
-obj1 = Car('BMW', 'X3', 25000)
+obj1 = FuelCars('BMW', 'X3', 25000, 'Petrol')
 print(obj1)
 
-obj2 = Car('Mahindra', 'XUV700', 12000)
+obj2 = ElectricCars('Tesla', 'S20', 12000, True)
 print(obj2)
 
-print(f'Before:')
-print(Car.price_inc)
-print(obj1.price_inc)
-print(obj2.price_inc)
-
-# Calling the class method
-Car.set_price_inc(1.26)
-# Even this will change the price_inc
-#obj1.set_price_inc(1.26)
-
-print(f'After:')
-print(Car.price_inc)
-print(obj1.price_inc)
-print(obj2.price_inc)
-
-# Create an object from comma separated stirng
-obj3 = Car.create_instance_from_comma_separated_string('Audi, A8, 22000')
-print(obj3)
-
-
-# Using a staticmethod
-import datetime
-tod = datetime.date(2021, 4, 8)
-print(Car.is_workday(tod))
+# To know Method Resolution Order and other details inherited from parent class
+#help(FuelCars)
+obj1.increase_price()
+print(obj1.price)
+obj2.increase_price()
+print(obj2.price)
+print(obj1.fuel)
